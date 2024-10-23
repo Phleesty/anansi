@@ -39,10 +39,16 @@ jobs:
           curl -sSL https://antifilter.download/list/ip.lst -o ip-block-list.txt
           echo "NUM_IP=$(wc -l < ip-block-list.txt)" >> $GITHUB_ENV
 
+      - name: Add custom IPs
+        run: cat ip.txt >> ip-block-list.txt
+
       - name: Get a list of blocked domains
         run: |
           curl -sSL https://antifilter.download/list/domains.lst -o ru-block.txt
           echo "NUM_DOMAIN=$(wc -l < ru-block.txt)" >> $GITHUB_ENV
+          
+      - name: Add custom domains
+        run: cat domains.txt >> ru-block.txt
 
       - name: Generate geoip.dat and Country.mmdb files
         run: |
