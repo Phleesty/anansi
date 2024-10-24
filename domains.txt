@@ -8,3 +8,4 @@ hetzner.com
 contabo.com
 blinkshot.io
 serverhost.com
+rutracker.cc
