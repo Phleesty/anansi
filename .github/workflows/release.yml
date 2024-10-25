@@ -50,11 +50,10 @@ jobs:
       - name: Add custom domains
         run: cat domains.txt >> ru-block.txt
 
-      - name: Prepare Discord Voice IPs
+      - name: Prepare Discord IPs
         run: |
-          # Создаем отдельный файл для Discord Voice IPs, если он не пуст
-          if [ -s discord-voice.txt ]; then
-            cp discord-voice.txt discord-voice-geoip.txt
+          if [ -s discord-ips.txt ]; then
+            cp discord-ips.txt discord-ips-geoip.txt
           fi
 
       - name: Generate geoip_ru.dat and Country.mmdb files
@@ -67,12 +66,11 @@ jobs:
           mv output/dat/geoip.dat release/geoip_ru.dat
           mv output/maxmind/Country.mmdb release
 
-      - name: Add Discord Voice IPs to geoip_ru.dat
+      - name: Add Discord IPs to geoip_ru.dat
         run: |
-          # Добавляем Discord Voice IPs в geoip_ru.dat как отдельную категорию
-          if [ -s discord-voice-geoip.txt ]; then
-            echo "[discord-voice]" >> release/geoip_ru.dat
-            cat discord-voice-geoip.txt >> release/geoip_ru.dat
+          if [ -s discord-ips-geoip.txt ]; then
+            echo "[discord]" >> release/geoip_ru.dat
+            cat discord-ips-geoip.txt >> release/geoip_ru.dat
           fi
 
       - name: Generate geosite_ru.dat file
