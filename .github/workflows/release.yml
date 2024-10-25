@@ -50,10 +50,15 @@ jobs:
       - name: Add custom domains
         run: cat domains.txt >> ru-block.txt
 
+      - name: Fetch Discord Voice IPs
+        run: |
+          # Загрузка IP-адресов по URL и сохранение их в файл discord-voice.txt
+          curl -sSL "https://iplist.opencck.org/?format=text&data=ip4&site=discord.com&site=discord.gg&site=discord.media" -o discord-ips-remote.txt
+
       - name: Prepare Discord IPs
         run: |
           if [ -s discord-ips.txt ]; then
-            cp discord-ips.txt discord-ips-geoip.txt
+            cp discord-ips-remote.txt discord-ips-geoip.txt
           fi
 
       - name: Generate geoip_ru.dat and Country.mmdb files
