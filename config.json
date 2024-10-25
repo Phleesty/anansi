@@ -9,6 +9,14 @@
             }
         },
         {
+            "type": "text",
+            "action": "add",
+            "args": {
+                "name": "discord",
+                "uri": "./discord-ip-list.txt"
+            }
+        },
+        {
             "type": "private",
             "action": "add"
         }
@@ -19,7 +27,7 @@
             "action": "output",
             "args": {
                 "outputName": "geoip.dat",
-                "wantedList": ["ru-block"]
+                "wantedList": ["ru-block", "discord"]
             }
         },
         {
@@ -27,7 +35,7 @@
             "action": "output",
             "args": {
                 "outputName": "Country.mmdb",
-                "overwriteList": ["ru-block"]
+                "overwriteList": ["ru-block", "discord"]
             }
         },
         {
