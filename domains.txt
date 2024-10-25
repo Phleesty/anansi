@@ -9,3 +9,4 @@ contabo.com
 blinkshot.io
 serverhost.com
 rutracker.cc
+ntc.party
