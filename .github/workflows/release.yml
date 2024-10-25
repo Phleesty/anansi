@@ -41,6 +41,11 @@ jobs:
 
       - name: Add custom IPs
         run: cat ip.txt >> ip-block-list.txt
+        
+      - name: Fetch Discord Voice IPs
+        run: |
+          curl -sSL "https://iplist.opencck.org/?format=text&data=ip4&site=discord.com&site=discord.gg&site=discord.media" -o discord-ip-list.txt
+
 
       - name: Get a list of blocked domains
         run: |
@@ -49,17 +54,6 @@ jobs:
           
       - name: Add custom domains
         run: cat domains.txt >> ru-block.txt
-
-      - name: Fetch Discord Voice IPs
-        run: |
-          # Загрузка IP-адресов по URL и сохранение их в файл discord-voice.txt
-          curl -sSL "https://iplist.opencck.org/?format=text&data=ip4&site=discord.com&site=discord.gg&site=discord.media" -o discord-ips-remote.txt
-
-      - name: Prepare Discord IPs
-        run: |
-          if [ -s discord-ips.txt ]; then
-            cp discord-ips-remote.txt discord-ips-geoip.txt
-          fi
 
       - name: Generate geoip_ru.dat and Country.mmdb files
         run: |
@@ -70,13 +64,6 @@ jobs:
           # Перемещаем файлы в директорию release
           mv output/dat/geoip.dat release/geoip_ru.dat
           mv output/maxmind/Country.mmdb release
-
-      - name: Add Discord IPs to geoip_ru.dat
-        run: |
-          if [ -s discord-ips-geoip.txt ]; then
-            echo "[discord]" >> release/geoip_ru.dat
-            cat discord-ips-geoip.txt >> release/geoip_ru.dat
-          fi
 
       - name: Generate geosite_ru.dat file
         run: |
