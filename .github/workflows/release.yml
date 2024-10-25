@@ -50,31 +50,44 @@ jobs:
       - name: Add custom domains
         run: cat domains.txt >> ru-block.txt
 
-      - name: Generate geoip.dat and Country.mmdb files
+      - name: Prepare Discord Voice IPs
+        run: |
+          # Создаем отдельный файл для Discord Voice IPs, если он не пуст
+          if [ -s discord-voice.txt ]; then
+            cp discord-voice.txt discord-voice-geoip.txt
+          fi
+
+      - name: Generate geoip_ru.dat and Country.mmdb files
         run: |
           go install -v github.com/Loyalsoldier/geoip@latest
+          # Запускаем генерацию geoip.dat с включением отдельных категорий
           $(go env GOPATH)/bin/geoip convert -c config.json
-          mv output/dat/geoip.dat release
+          
+          # Перемещаем файлы в директорию release
+          mv output/dat/geoip.dat release/geoip_ru.dat
           mv output/maxmind/Country.mmdb release
 
-      # - name: Verify Country.mmdb files
-      #   run: |
-      #     go install -v github.com/maxmind/mmdbverify@latest
-      #     $(go env GOPATH)/bin/mmdbverify -file release/Country.mmdb
+      - name: Add Discord Voice IPs to geoip_ru.dat
+        run: |
+          # Добавляем Discord Voice IPs в geoip_ru.dat как отдельную категорию
+          if [ -s discord-voice-geoip.txt ]; then
+            echo "[discord-voice]" >> release/geoip_ru.dat
+            cat discord-voice-geoip.txt >> release/geoip_ru.dat
+          fi
 
-      - name: Generate geosite.dat file
+      - name: Generate geosite_ru.dat file
         run: |
           cd v2ray-geosite
           mkdir data
           mv ../ru-block.txt data/ru-block
 
-          go run ./ --datapath=data --outputdir=../release --outputname=geosite.dat
+          go run ./ --datapath=data --outputdir=../release --outputname=geosite_ru.dat
 
       - name: Generate sha256sum
         run: |
-          sha256sum release/geoip.dat > release/geoip.dat.sha256sum
+          sha256sum release/geoip_ru.dat > release/geoip_ru.dat.sha256sum
           sha256sum release/Country.mmdb > release/Country.mmdb.sha256sum
-          sha256sum release/geosite.dat > release/geosite.dat.sha256sum
+          sha256sum release/geosite_ru.dat > release/geosite_ru.dat.sha256sum
 
       - name: Generate Release Notes
         run: | 
